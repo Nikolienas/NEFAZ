@@ -5,7 +5,7 @@ import psycopg2
 from PyQt5.QtGui import QPixmap
 
 
-class Example(QMainWindow):
+class START(QMainWindow):
 
     def __init__(self):
         super().__init__()
@@ -14,14 +14,12 @@ class Example(QMainWindow):
     def access_db(self):
         print('hi')
 
-        hbox = QHBoxLayout(self)
-        pixmap = QPixmap('l.png')
-        lbl = QLabel(self)
-        lbl.setPixmap(pixmap)
-        hbox.addWidget(lbl)
-        self.setLayout(hbox)
-        lbl.resize(700, 45)
-        lbl.move(50, 50)
+        global logo
+        pixmap = QPixmap('logo.jpg')
+        logo = QLabel(self)
+        logo.setPixmap(pixmap)
+        logo.resize(700, 70)
+        logo.move(20, 20)
 
         global name
         name = QLineEdit(self)
@@ -84,30 +82,26 @@ class Example(QMainWindow):
             os.system(r'new_january.py')
             self.terminate()
         elif sender.text() == 'Войти':
-            input_name = name.text()
-            input_password = password.text()
-            self.conn = psycopg2.connect(user=input_name,
-                                         password=input_password,
+            self.conn = psycopg2.connect(user=name.text(),
+                                         password=password.text(),
                                          host="localhost",
                                          port="5432",
                                          database="NEFAZ")
             self.cur = self.conn.cursor()
             self.hide()
+            logo.hide()
             self.initUI()
+
 
             # self.cur.execute("""SELECT * FROM model_directory""")
             # sv = self.cur.fetchone()
             # print(sv)
             # self.conn.commit
 
-
-
-
-
 if __name__ == '__main__':
 
     app = QApplication(sys.argv)
-    ex = Example()
+    ex = START()
     sys.exit(app.exec_())
 
 

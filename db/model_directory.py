@@ -4,7 +4,6 @@ from PyQt5.QtWidgets import QTableWidget, QApplication, QMainWindow, QTableWidge
 from PyQt5.QtWidgets import QTableWidgetItem, QWidget, QPushButton, QLineEdit
 from PyQt5 import QtGui
 
-
 class MyWidget(QWidget):
     def __init__(self):
         super().__init__()
@@ -20,7 +19,7 @@ class MyWidget(QWidget):
         self.btn.move(300, 10)
         self.btn.clicked.connect(self.upd)
         # здесь идентификатор
-        self.idp = QLineEdit(self)
+        self.idp = QLineEdit("Идентификатор", self)
         self.idp.resize(150, 40)
         self.idp.move(300, 60)
         self.idp.setReadOnly(True)
@@ -33,10 +32,15 @@ class MyWidget(QWidget):
         self.btn.resize(150, 40)
         self.btn.move(300, 210)
         self.btn.clicked.connect(self.ins)
+        # кнопка изменить запись
+        self.btn = QPushButton('Изменить', self)
+        self.btn.resize(150, 40)
+        self.btn.move(300, 260)
+        self.btn.clicked.connect(self.refresh)
         # кнопка удалить запись
         self.btn = QPushButton('Удалить', self)
         self.btn.resize(150, 40)
-        self.btn.move(300, 260)
+        self.btn.move(300, 310)
         self.btn.clicked.connect(self.dels)
 
     # соединение с базой данных
@@ -70,6 +74,15 @@ class MyWidget(QWidget):
         except:
             return
         self.cur.execute("delete from model_directory where id=%s", (ids,))
+        self.upd()
+
+    def refresh(self):
+        model = self.model.text()
+        try:
+            ids = int(self.idp.text())  # идентификатор строки
+        except:
+            return
+        self.cur.execute("""UPDATE model_directory SET model = %s where id=%s""", (model, ids))
         self.upd()
 
 

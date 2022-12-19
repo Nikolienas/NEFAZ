@@ -20,7 +20,7 @@ class MyWidget(QWidget):
         self.btn.move(300, 10)
         self.btn.clicked.connect(self.upd)
 # здесь идентификатор
-        self.idp = QLineEdit(self)
+        self.idp = QLineEdit('Идентификатор', self)
         self.idp.resize(150, 40)
         self.idp.move(300, 60)
         self.idp.setReadOnly(True)
@@ -49,10 +49,15 @@ class MyWidget(QWidget):
         self.btn.resize(150, 40)
         self.btn.move(300, 360)
         self.btn.clicked.connect(self.ins)
+# кнопка изменить запись
+        self.btn = QPushButton('Изменить', self)
+        self.btn.resize(150, 40)
+        self.btn.move(300, 410)
+        self.btn.clicked.connect(self.refresh)
 # кнопка удалить запись
         self.btn = QPushButton('Удалить', self)
         self.btn.resize(150, 40)
-        self.btn.move(300, 410)
+        self.btn.move(300, 460)
         self.btn.clicked.connect(self.dels)
 # соединение с базой данных
     def con(self):
@@ -89,6 +94,17 @@ class MyWidget(QWidget):
         except:
             return
         self.cur.execute("delete from user_directory where id=%s",(ids,))
+        self.upd()
+# изменить запись в таблице
+    def refresh(self):
+        change, plan, assembly, welding, staff_member \
+            = self.change.text(), self.plan.text(), self.assembly.text(), self.welding.text(), self.staff_member.text()
+        try:
+            ids = int(self.idp.text())  # идентификатор строки
+        except:
+            return
+        self.cur.execute("""UPDATE user_directory SET change = %s, plan = %s, assembly = %s, welding = %s, 
+        staff_member = %s where id=%s""", (change, plan, assembly, welding, staff_member, ids))
         self.upd()
 
 

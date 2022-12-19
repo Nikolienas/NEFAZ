@@ -49,10 +49,18 @@ cur = con.cursor()
 #
 # cur.execute("""insert into new_january (model_id, plan_id, assembly_day, assembly_month, welding_day, welding_month, change_id) values (%s,%s,%s,%s,%s,%s,%s)""", (model_id, plan_id, assembly_day, assembly_month, welding_day, welding_month, change_id))
 
-cur.execute("""CREATE TABLE users (
-            id SERIAL PRIMARY KEY,
-            user_name VARCHAR(255),
-            password VARCHAR(255))""")
+# cur.execute("""CREATE TABLE users (
+#             id SERIAL PRIMARY KEY,
+#             user_name VARCHAR(255),
+#             password VARCHAR(255))""")
+
+
+# cur.execute("""UPDATE new_january SET model_id = %s, plan_id = %s, assembly_day = %s, assembly_month = %s,
+#         welding_day = %s, welding_month = %s, change_id = %s where id = 1""",
+#             (model_id, plan_id, assembly_day, assembly_month, welding_day, welding_month, change_id))
+
+model = input()
+cur.execute("insert into model_directory (model) values (%s)", (model,))
 
 con.commit()
 

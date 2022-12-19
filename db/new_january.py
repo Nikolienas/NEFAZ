@@ -20,7 +20,7 @@ class MyWidget(QWidget):
         self.btn.move(600, 10)
         self.btn.clicked.connect(self.upd)
 # здесь идентификатор
-        self.idp = QLineEdit(self)
+        self.idp = QLineEdit('Идентификатор', self)
         self.idp.resize(150, 40)
         self.idp.move(600, 60)
         self.idp.setReadOnly(True)
@@ -57,10 +57,15 @@ class MyWidget(QWidget):
         self.btn.resize(150, 40)
         self.btn.move(600, 460)
         self.btn.clicked.connect(self.ins)
+# кнопка изменить запись
+        self.btn = QPushButton('Изменить', self)
+        self.btn.resize(150, 40)
+        self.btn.move(600, 510)
+        self.btn.clicked.connect(self.refresh)
 # кнопка удалить запись
         self.btn = QPushButton('Удалить', self)
         self.btn.resize(150, 40)
-        self.btn.move(600, 510)
+        self.btn.move(600, 560)
         self.btn.clicked.connect(self.dels)
 # соединение с базой данных
     def con(self):
@@ -104,6 +109,19 @@ class MyWidget(QWidget):
         self.cur.execute("delete from new_january where id=%s",(ids,))
         self.upd()
 
+# изменение данных в таблице
+    def refresh(self):
+        model_id, plan_id, assembly_day, assembly_month, welding_day, welding_month, change_id\
+            = self.model_id.text(), self.plan_id.text(), self.assembly_day.text(), self.assembly_month.text(),\
+              self.welding_day.text(), self.welding_month.text(), self.change_id.text()
+        try:
+            ids = int(self.idp.text())  # идентификатор строки
+        except:
+            return
+        self.cur.execute("""UPDATE new_january SET model_id = %s, plan_id = %s, assembly_day = %s, assembly_month = %s, 
+        welding_day = %s, welding_month = %s, change_id = %s where id = %s""",
+                         (model_id, plan_id, assembly_day, assembly_month, welding_day, welding_month, change_id, ids))
+        self.upd()
 
 # класс - таблица
 class Tb(QTableWidget):
