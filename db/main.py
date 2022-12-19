@@ -1,7 +1,9 @@
 import sys
-from PyQt5.QtWidgets import QMainWindow, QPushButton, QApplication, QLineEdit
+from PyQt5.QtWidgets import QMainWindow, QPushButton, QApplication, QLineEdit, QLabel, QHBoxLayout
 import os
 import psycopg2
+from PyQt5.QtGui import QPixmap
+
 
 class Example(QMainWindow):
 
@@ -11,6 +13,15 @@ class Example(QMainWindow):
 
     def access_db(self):
         print('hi')
+
+        hbox = QHBoxLayout(self)
+        pixmap = QPixmap('l.png')
+        lbl = QLabel(self)
+        lbl.setPixmap(pixmap)
+        hbox.addWidget(lbl)
+        self.setLayout(hbox)
+        lbl.resize(700, 45)
+        lbl.move(50, 50)
 
         global name
         name = QLineEdit(self)
