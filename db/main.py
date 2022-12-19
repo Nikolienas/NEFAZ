@@ -12,8 +12,6 @@ class START(QMainWindow):
         self.access_db()
 
     def access_db(self):
-        print('hi')
-
         global logo
         pixmap = QPixmap('logo.jpg')
         logo = QLabel(self)
@@ -33,12 +31,12 @@ class START(QMainWindow):
         password.setPlaceholderText('Введите пароль:')
         password.move(100, 150)
 
+        global enter
         enter = QPushButton('Войти', self)
         enter.resize(60, 35)
         enter.move(145, 200)
 
         enter.clicked.connect(self.buttonClicked)
-
 
         self.setGeometry(500, 100, 400, 400)
         self.setWindowTitle('ВХОД')
@@ -69,7 +67,6 @@ class START(QMainWindow):
     def buttonClicked(self):
         sender = self.sender()
         if sender.text() == "Справочник моделей":
-            print(sender.text())
             self.hide()
             os.system(r'model_directory.py')
             self.termiante()
@@ -88,8 +85,7 @@ class START(QMainWindow):
                                          port="5432",
                                          database="NEFAZ")
             self.cur = self.conn.cursor()
-            self.hide()
-            logo.hide()
+            logo.hide(), self.hide(), enter.hide(), name.hide(), password.hide()
             self.initUI()
 
 
