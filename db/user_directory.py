@@ -11,53 +11,69 @@ class MyWidget(QWidget):
 # подключить базу данных
         self.con()
 # параметры окна
-        self.setGeometry(450, 100, 500, 600)
+        self.setGeometry(200, 65, 975, 650)
         self.setWindowTitle('Справочник пользователя')
         self.tb = Tb(self)
 # кнопка "обновить"
         self.btn = QPushButton('Обновить', self)
         self.btn.resize(150, 40)
-        self.btn.move(300, 10)
+        self.btn.move(600, 10)
         self.btn.clicked.connect(self.upd)
 # здесь идентификатор
         self.idp = QLineEdit('Идентификатор', self)
         self.idp.resize(150, 40)
-        self.idp.move(300, 60)
+        self.idp.move(600, 60)
         self.idp.setReadOnly(True)
 # здесь сдача
         self.change = QLineEdit(self)
         self.change.resize(150, 40)
-        self.change.move(300, 110)
+        self.change.move(600, 110)
 # здесь план
         self.plan = QLineEdit(self)
         self.plan.resize(150, 40)
-        self.plan.move(300, 160)
+        self.plan.move(600, 160)
 # здесь сборка
         self.assembly = QLineEdit(self)
         self.assembly.resize(150, 40)
-        self.assembly.move(300, 210)
+        self.assembly.move(600, 210)
 # здесь сварка
         self.welding = QLineEdit(self)
         self.welding.resize(150, 40)
-        self.welding.move(300, 260)
+        self.welding.move(600, 260)
 # здесь сотрудники
         self.staff_member = QLineEdit(self)
         self.staff_member.resize(150, 40)
-        self.staff_member.move(300, 310)
+        self.staff_member.move(600, 310)
+# здесь логин
+        self.login = QLineEdit(self)
+        self.login.resize(150, 40)
+        self.login.move(600, 360)
+# здесь пароль
+        self.password = QLineEdit(self)
+        self.password.resize(150, 40)
+        self.password.move(600, 410)
+# здесь подразделение
+        self.date_of_creation = QLineEdit(self)
+        self.date_of_creation.resize(150, 40)
+        self.date_of_creation.move(600, 460)
+# здесь подразделение
+        self.units = QLineEdit(self)
+        self.units.resize(150, 40)
+        self.units.move(600, 510)
 # кнопка добавить запись
         self.btn = QPushButton('Добавить', self)
         self.btn.resize(150, 40)
-        self.btn.move(300, 360)
+        self.btn.move(600, 560)
         self.btn.clicked.connect(self.ins)
 # кнопка изменить запись
         self.btn = QPushButton('Изменить', self)
         self.btn.resize(150, 40)
-        self.btn.move(300, 410)
+        self.btn.move(600, 610)
         self.btn.clicked.connect(self.refresh)
 # кнопка удалить запись
         self.btn = QPushButton('Удалить', self)
         self.btn.resize(150, 40)
-        self.btn.move(300, 460)
+        self.btn.move(800, 10)
         self.btn.clicked.connect(self.dels)
 # соединение с базой данных
     def con(self):
@@ -77,13 +93,19 @@ class MyWidget(QWidget):
         self.assembly.setText('')
         self.welding.setText('')
         self.staff_member.setText('')
+        self.login.setText('')
+        self.password.setText('')
+        self.date_of_creation.setText('')
+        self.units.setText('')
 # добавить таблицу новую строку
     def ins(self):
-        change, plan, assembly, welding, staff_member\
-            = self.change.text(), self.plan.text(), self.assembly.text(), self.welding.text(), self.staff_member.text()
+        change, plan, assembly, welding, staff_member, login, password, date_of_creation, units = \
+            self.change.text(), self.plan.text(), self.assembly.text(), self.welding.text(), self.staff_member.text(),
+        self.login.text(), self.password.text(), self.date_of_creation.text(), self.units.text()
         try:
-            self.cur.execute("""insert into user_directory (change, plan, assembly, welding, staff_member)
-                              values (%s,%s,%s,%s,%s)""", (change, plan, assembly, welding, staff_member))
+            self.cur.execute("""insert into user_directory (change, plan, assembly, welding, staff_member, login,
+            password, date_of_creation, units) values (%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
+                             (change, plan, assembly, welding, staff_member, login, password, date_of_creation, units))
         except:
             pass
         self.upd()
@@ -97,14 +119,16 @@ class MyWidget(QWidget):
         self.upd()
 # изменить запись в таблице
     def refresh(self):
-        change, plan, assembly, welding, staff_member \
-            = self.change.text(), self.plan.text(), self.assembly.text(), self.welding.text(), self.staff_member.text()
+        change, plan, assembly, welding, staff_member, login, password, date_of_creation, units = \
+            self.change.text(), self.plan.text(), self.assembly.text(), self.welding.text(), self.staff_member.text(),
+        self.login.text(), self.password.text(), self.date_of_creation.text(), self.units.text()
         try:
             ids = int(self.idp.text())  # идентификатор строки
         except:
             return
         self.cur.execute("""UPDATE user_directory SET change = %s, plan = %s, assembly = %s, welding = %s, 
-        staff_member = %s where id=%s""", (change, plan, assembly, welding, staff_member, ids))
+        staff_member = %s, login = %s, password = %s, date_of_creation = %s, units = % s where id=%s""",
+                         (change, plan, assembly, welding, staff_member, login, password, date_of_creation, units, ids))
         self.upd()
 
 
@@ -113,8 +137,8 @@ class Tb(QTableWidget):
     def __init__(self, wg):
         self.wg = wg  # запомнить окно, в котором эта таблица показывается
         super().__init__(wg)
-        self.setGeometry(10, 10, 280, 500)
-        self.setColumnCount(6)
+        self.setGeometry(10, 10, 575, 500)
+        self.setColumnCount(10)
         self.verticalHeader().hide();
         self.updt() # обновить таблицу
         self.setEditTriggers(QTableWidget.NoEditTriggers) # запретить изменять поля
@@ -124,7 +148,8 @@ class Tb(QTableWidget):
     def updt(self):
         self.clear()
         self.setRowCount(0);
-        self.setHorizontalHeaderLabels(['id', 'Сдача', 'План', 'Сборка', 'Сварка', 'Сотрудник']) # заголовки столцов
+        self.setHorizontalHeaderLabels(['id', 'Сдача', 'План', 'Сборка', 'Сварка', 'Сотрудник', 'Логин',
+                                        'Пароль', 'Время создания', 'Подразделение']) # заголовки столцов
         self.wg.cur.execute("select * from user_directory order by id asc")
         rows = self.wg.cur.fetchall()
         i = 0
@@ -145,7 +170,10 @@ class Tb(QTableWidget):
         self.wg.assembly.setText(self.item(row, 3).text().strip())
         self.wg.welding.setText(self.item(row, 4).text().strip())
         self.wg.staff_member.setText(self.item(row, 5).text().strip())
-
+        self.wg.login.setText(self.item(row, 6).text().strip())
+        self.wg.password.setText(self.item(row, 7).text().strip())
+        self.wg.date_of_creation.setText(self.item(row, 8).text().strip())
+        self.wg.units.setText(self.item(row, 9).text().strip())
 
 app = QApplication(sys.argv)
 ex = MyWidget()

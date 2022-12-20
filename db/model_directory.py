@@ -23,24 +23,32 @@ class MyWidget(QWidget):
         self.idp.resize(150, 40)
         self.idp.move(300, 60)
         self.idp.setReadOnly(True)
+        # здесь обозначение
+        self.designation = QLineEdit(self)
+        self.designation.resize(150, 40)
+        self.designation.move(300, 110)
         # здесь модель
         self.model = QLineEdit(self)
         self.model.resize(150, 40)
-        self.model.move(300, 110)
+        self.model.move(300, 160)
+        # здесь название
+        self.title = QLineEdit(self)
+        self.title.resize(150, 40)
+        self.title.move(300, 210)
         # кнопка добавить запись
         self.btn = QPushButton('Добавить', self)
         self.btn.resize(150, 40)
-        self.btn.move(300, 210)
+        self.btn.move(300, 260)
         self.btn.clicked.connect(self.ins)
         # кнопка изменить запись
         self.btn = QPushButton('Изменить', self)
         self.btn.resize(150, 40)
-        self.btn.move(300, 260)
+        self.btn.move(300, 310)
         self.btn.clicked.connect(self.refresh)
         # кнопка удалить запись
         self.btn = QPushButton('Удалить', self)
         self.btn.resize(150, 40)
-        self.btn.move(300, 310)
+        self.btn.move(300, 460)
         self.btn.clicked.connect(self.dels)
 
     # соединение с базой данных
@@ -57,12 +65,15 @@ class MyWidget(QWidget):
         self.conn.commit()
         self.tb.updt()
         self.idp.setText('')
+        self.designation.setText('')
         self.model.setText('')
+        self.title.setText('')
     # добавить таблицу новую строку
     def ins(self):
-        model = self.model.text()
+        designation, model, title = self.designation.text(), self.model.text(), self.title.text()
         try:
-            self.cur.execute("insert into model_directory (model) values (%s)", (model))
+            self.cur.execute("insert into model_directory (designation, model, title) values (%s, %s, %s)",
+                             (designation, model, title))
         except:
             pass
         self.upd()
@@ -77,12 +88,13 @@ class MyWidget(QWidget):
         self.upd()
 
     def refresh(self):
-        model = self.model.text()
+        designation, model, title = self.designation.text(), self.model.text(), self.title.text()
         try:
             ids = int(self.idp.text())  # идентификатор строки
         except:
             return
-        self.cur.execute("""UPDATE model_directory SET model = %s where id=%s""", (model, ids))
+        self.cur.execute("""UPDATE model_directory SET designation = %s, model = %s, title = %s
+                            where id=%s""", (designation, model, title, ids))
         self.upd()
 
 
@@ -92,7 +104,7 @@ class Tb(QTableWidget):
         self.wg = wg  # запомнить окно, в котором эта таблица показывается
         super().__init__(wg)
         self.setGeometry(10, 10, 280, 500)
-        self.setColumnCount(2)
+        self.setColumnCount(4)
         self.verticalHeader().hide();
         self.updt()  # обновить таблицу
         self.setEditTriggers(QTableWidget.NoEditTriggers)  # запретить изменять поля
@@ -102,7 +114,7 @@ class Tb(QTableWidget):
     def updt(self):
         self.clear()
         self.setRowCount(0);
-        self.setHorizontalHeaderLabels(['id', 'Модель'])  # заголовки столцов
+        self.setHorizontalHeaderLabels(['id', 'Обозначение', 'Модель', 'Описание'])  # заголовки столцов
         self.wg.cur.execute("select * from model_directory order by id asc")
         rows = self.wg.cur.fetchall()
         i = 0
@@ -118,7 +130,9 @@ class Tb(QTableWidget):
     # обработка щелчка мыши по таблице
     def cellClick(self, row, col):  # row - номер строки, col - номер столбца
         self.wg.idp.setText(self.item(row, 0).text())
-        self.wg.model.setText(self.item(row, 1).text().strip())
+        self.wg.designation.setText(self.item(row, 1).text().strip())
+        self.wg.model.setText(self.item(row, 2).text().strip())
+        self.wg.title.setText(self.item(row, 3).text().strip())
 
 
 

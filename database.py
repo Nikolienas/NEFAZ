@@ -59,8 +59,22 @@ cur = con.cursor()
 #         welding_day = %s, welding_month = %s, change_id = %s where id = 1""",
 #             (model_id, plan_id, assembly_day, assembly_month, welding_day, welding_month, change_id))
 
-model = input()
-cur.execute("insert into model_directory (model) values (%s)", (model,))
+# model = input()
+# cur.execute("insert into model_directory (model) values (%s)", (model,))
+
+# cur.execute("""ALTER TABLE user_directory ADD units VARCHAR(255);""")
+
+# cur.execute("""ALTER TABLE model_directory ADD title VARCHAR(255);""")
+
+# change, plan, assembly, welding, staff_member, units, date_of_creation = \
+#             self.change.text(), self.plan.text(), self.assembly.text(), self.welding.text(), self.staff_member.text(),
+#         self.units.text(), self.date_of_creation.text()
+#
+# self.cur.execute("""UPDATE user_directory SET change = %s, plan = %s, assembly = %s, welding = %s,
+#         staff_member = %s, units = %s, date_of_creation = %s where id=%s""",
+#                          (change, plan, assembly, welding, staff_member, units, date_of_creation, ids))
+
+cur.execute("""""")
 
 con.commit()
 
