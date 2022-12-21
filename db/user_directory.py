@@ -95,6 +95,12 @@ class MyWidget(QWidget):
         self.btn.resize(150, 40)
         self.btn.move(800, 210)
         self.btn.clicked.connect(self.check_welding)
+# добавление роли
+        self.btn = QPushButton('Добавление роли', self)
+        self.btn.resize(150, 40)
+        self.btn.move(800, 260)
+        self.btn.clicked.connect(self.adding)
+
 # соединение с базой данных
     def con(self):
         self.conn = psycopg2.connect(user="postgres",
@@ -119,6 +125,8 @@ class MyWidget(QWidget):
         self.units.setText('')
 # добавить таблицу новую строку
     def ins(self):
+        global login
+        global password
         change, plan, assembly, welding, staff_member, login, password, date_of_creation, units = \
         self.change.text(), self.plan.text(), self.assembly.text(), self.welding.text(), self.staff_member.text(),\
         self.login.text(), self.password.text(), self.date_of_creation.text(), self.units.text()
@@ -140,6 +148,8 @@ class MyWidget(QWidget):
         self.upd()
 # изменить запись в таблице
     def refresh(self):
+        global login
+        global password
         change, plan, assembly, welding, staff_member, login, password, date_of_creation, units = \
         self.change.text(), self.plan.text(), self.assembly.text(), self.welding.text(), self.staff_member.text(), \
         self.login.text(), self.password.text(), self.date_of_creation.text(), self.units.text()
@@ -194,6 +204,26 @@ class MyWidget(QWidget):
         global d
         d = self.cur.fetchone()
         print(d)
+        self.upd()
+
+    def adding(self):
+        self.cur.execute("""CREATE ROLE %s LOGIN PASSWORD %s""", (login, password))
+        self.upd()
+
+    def admin(self):
+        if a == True:
+            self.cur.execute("""GRANT UPDATE change_id on new_january to %s""", (login, ))
+        elif b == True:
+            self.cur.execute("""GRANT UPDATE plan_id on new_january to %s""", (login,))
+        elif c == True:
+            self.cur.execute("""GRANT UPDATE assembly_day on new_january to %s AND
+            GRANT UPDATE assembly_month on new_january to %s""", (login, login,))
+        elif d == True:
+            self.cur.execute("""GRANT UPDATE welding_day on new_january to %s AND
+            GRANT UPDATE welding_month on new_january to %s""", (login, login))
+        elif a == True and b == True:
+            ("""GRANT UPDATE change_id on new_january to %s AND GRANT UPDATE plan_id on new_january to %s""",
+             (login, login, ))
         self.upd()
 
 # класс - таблица
