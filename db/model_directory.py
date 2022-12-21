@@ -53,8 +53,8 @@ class MyWidget(QWidget):
 
     # соединение с базой данных
     def con(self):
-        self.conn = psycopg2.connect(user="postgres",
-                                     password="postgres",
+        self.conn = psycopg2.connect(user="ko",
+                                     password="55",
                                      host="localhost",
                                      port="5432",
                                      database="NEFAZ")
@@ -93,8 +93,11 @@ class MyWidget(QWidget):
             ids = int(self.idp.text())  # идентификатор строки
         except:
             return
-        self.cur.execute("""UPDATE model_directory SET designation = %s, model = %s, title = %s
-                            where id=%s""", (designation, model, title, ids))
+        try:
+            self.cur.execute("""UPDATE model_directory SET designation = %s, model = %s, title = %s
+                                where id=%s""", (designation, model, title, ids))
+        except:
+            pass
         self.upd()
 
 

@@ -61,7 +61,7 @@ class MyWidget(QWidget):
         self.units.resize(150, 40)
         self.units.move(600, 510)
 # кнопка добавить запись
-        self.btn = QPushButton('Добавить', self)
+        self.btn = QPushButton('Добавить столбец', self)
         self.btn.resize(150, 40)
         self.btn.move(600, 560)
         self.btn.clicked.connect(self.ins)
@@ -75,6 +75,26 @@ class MyWidget(QWidget):
         self.btn.resize(150, 40)
         self.btn.move(800, 10)
         self.btn.clicked.connect(self.dels)
+# проверка сдачи
+        self.btn = QPushButton('Проверка сдачи', self)
+        self.btn.resize(150, 40)
+        self.btn.move(800, 60)
+        self.btn.clicked.connect(self.check_change)
+# проверка плана
+        self.btn = QPushButton('Проверка плана', self)
+        self.btn.resize(150, 40)
+        self.btn.move(800, 110)
+        self.btn.clicked.connect(self.check_plan)
+# проверка сборки
+        self.btn = QPushButton('Проверка сборки', self)
+        self.btn.resize(150, 40)
+        self.btn.move(800, 160)
+        self.btn.clicked.connect(self.check_assembly)
+# проверка сварки
+        self.btn = QPushButton('Проверка сварки', self)
+        self.btn.resize(150, 40)
+        self.btn.move(800, 210)
+        self.btn.clicked.connect(self.check_welding)
 # соединение с базой данных
     def con(self):
         self.conn = psycopg2.connect(user="postgres",
@@ -100,16 +120,17 @@ class MyWidget(QWidget):
 # добавить таблицу новую строку
     def ins(self):
         change, plan, assembly, welding, staff_member, login, password, date_of_creation, units = \
-            self.change.text(), self.plan.text(), self.assembly.text(), self.welding.text(), self.staff_member.text(),
+        self.change.text(), self.plan.text(), self.assembly.text(), self.welding.text(), self.staff_member.text(),\
         self.login.text(), self.password.text(), self.date_of_creation.text(), self.units.text()
         try:
             self.cur.execute("""insert into user_directory (change, plan, assembly, welding, staff_member, login,
             password, date_of_creation, units) values (%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
                              (change, plan, assembly, welding, staff_member, login, password, date_of_creation, units))
+            self.conn.commit()
         except:
             pass
         self.upd()
-# удалить из таблицы строку
+# удалить из таблицы строку 1073741845
     def dels(self):
         try:
             ids = int(self.idp.text()) # идентификатор строки
@@ -120,17 +141,60 @@ class MyWidget(QWidget):
 # изменить запись в таблице
     def refresh(self):
         change, plan, assembly, welding, staff_member, login, password, date_of_creation, units = \
-            self.change.text(), self.plan.text(), self.assembly.text(), self.welding.text(), self.staff_member.text(),
+        self.change.text(), self.plan.text(), self.assembly.text(), self.welding.text(), self.staff_member.text(), \
         self.login.text(), self.password.text(), self.date_of_creation.text(), self.units.text()
         try:
             ids = int(self.idp.text())  # идентификатор строки
         except:
             return
-        self.cur.execute("""UPDATE user_directory SET change = %s, plan = %s, assembly = %s, welding = %s, 
-        staff_member = %s, login = %s, password = %s, date_of_creation = %s, units = % s where id=%s""",
+        self.cur.execute("""UPDATE user_directory SET change = %s, plan = %s, assembly = %s, welding = %s,
+        staff_member = %s, login = %s, password = %s, date_of_creation = %s, units = %s where id=%s""",
                          (change, plan, assembly, welding, staff_member, login, password, date_of_creation, units, ids))
         self.upd()
 
+    def check_change(self):
+        try:
+            ids = int(self.idp.text())  # идентификатор строки
+        except:
+            return
+        self.cur.execute("""SELECT change from user_directory WHERE id=%s""", (ids, ))
+        global a
+        a = self.cur.fetchone()
+        print(a)
+        self.upd()
+
+    def check_plan(self):
+        try:
+            ids = int(self.idp.text())  # идентификатор строки
+        except:
+            return
+        self.cur.execute("""SELECT plan from user_directory WHERE id=%s""", (ids,))
+        global b
+        b = self.cur.fetchone()
+        print(b)
+        self.upd()
+
+    def check_assembly(self):
+        try:
+            ids = int(self.idp.text())  # идентификатор строки
+        except:
+            return
+        self.cur.execute("""SELECT assembly from user_directory WHERE id=%s""", (ids,))
+        global c
+        c = self.cur.fetchone()
+        print(c)
+        self.upd()
+
+    def check_welding(self):
+        try:
+            ids = int(self.idp.text())  # идентификатор строки
+        except:
+            return
+        self.cur.execute("""SELECT welding from user_directory WHERE id=%s""", (ids,))
+        global d
+        d = self.cur.fetchone()
+        print(d)
+        self.upd()
 
 # класс - таблица
 class Tb(QTableWidget):
